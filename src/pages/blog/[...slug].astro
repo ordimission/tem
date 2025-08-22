@@ -2,14 +2,16 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/BlogLayout.astro';
 
+
+
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
   return posts
     .filter(post => !post.data.draft)
     .map(post => ({
       params: {
-        // Remplace les slashs par des tirets dans l’URL
-        slug: post.slug.replace(/\//g, '-'),
+        // conserve le dernière partie après slash
+        slug: post.slug.split("/").slice(-1)[0],    // replace(/\//g, '-')
       },
     }));
 }
@@ -18,7 +20,7 @@ const { slug } = Astro.params;
 
 // Recomposez le slug original si besoin, sinon recherchez directement sur la version nettoyée
 const posts = await getCollection('blog');
-const post = posts.find(p => p.slug.replace(/\//g, '-') === slug);
+const post = posts.find(p => p.slug.split("/").slice(-1)[0] === slug);
 
 if (!post) {
   throw new Error(`Article introuvable pour le slug « ${slug} »`);

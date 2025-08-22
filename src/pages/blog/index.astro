@@ -6,7 +6,7 @@ const posts = await getCollection('blog');
 <ul>
   {posts.map(post => (
     <li>
-      <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+      <a href={`/blog/${post.slug.split("/").slice(-1)[0]}`}>{post.data.title}</a>
     </li>
   ))}
 </ul>
