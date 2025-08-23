@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+const posts = await getCollection('blog');
+
+function convertUpperCaseWithoutDiacritics(texte: string): string {
+  return texte
+    .normalize("NFD") // Sépare les caractères et leurs diacritiques
+    .replace(/[\u0300-\u036f]/g, "") // Supprime les diacritiques
+    .toUpperCase(); // Convertit en majuscules
+}
+
+
+---
+
+<ul>
+  {posts.map(post => (
+    <li>
+      <a href={`/blog/${post.slug.split("/").slice(-1)[0]}`}>{convertUpperCaseWithoutDiacritics(post.data.title)}</a>
+    </li>
+  ))}
+</ul>

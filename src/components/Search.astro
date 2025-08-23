@@ -1,0 +1,46 @@
+<div id="search-container">
+  <input 
+    type="text" 
+    id="search-input" 
+    placeholder="Rechercher par titre, contenu ou tags..."
+  />
+  <div id="search-results" class="hidden"></div>
+</div>
+
+<script>
+  import Fuse from 'fuse.js';
+
+  class SearchComponent {
+    async initializeSearch() {
+      const response = await fetch('/api/search');
+      this.searchData = await response.json();
+      
+      const fuseOptions = {
+        keys: [
+          { name: 'title', weight: 0.3 },
+          { name: 'description', weight: 0.2 },
+          { name: 'tags', weight: 0.3 },
+          { name: 'content', weight: 0.1 }
+        ],
+        threshold: 0.4,
+        includeScore: true
+      };
+
+      this.fuse = new Fuse(this.searchData, fuseOptions);
+    }
+
+    performSearch(query) {
+      // Recherche spéciale par tags avec #
+      if (query.startsWith('#')) {
+        const tag = query.slice(1).toLowerCase();
+        return this.searchData.filter(item => 
+          item.tags.some(t => t.toLowerCase().includes(tag))
+        );
+      }
+      
+      return this.fuse.search(query);
+    }
+  }
+
+  new SearchComponent();
+</script>

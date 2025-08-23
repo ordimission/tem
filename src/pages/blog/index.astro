@@ -1,21 +1,70 @@
 ---
 import { getCollection } from 'astro:content';
+
 const posts = await getCollection('blog');
+const tags = Array.from(
+  new Set(posts.flatMap(post => post.data.tags ?? []))
+).sort();
+const categories = Array.from(
+  new Set(posts.map(post => post.data.category).filter(Boolean))
+).sort();
 
-function convertUpperCaseWithoutDiacritics(texte: string): string {
-  return texte
-    .normalize("NFD") // Sépare les caractères et leurs diacritiques
-    .replace(/[\u0300-\u036f]/g, "") // Supprime les diacritiques
-    .toUpperCase(); // Convertit en majuscules
-}
+// Par exemple récupérer la catégorie sélectionnée via un paramètre URL ou manuellement ici
+const selectedCategory = Astro.props?.category || ''; // ou config ici
 
-
+// Filtrage selon la catégorie sélectionnée (vide = tous)
+const filteredPosts = selectedCategory
+  ? posts.filter(post => post.data.category === selectedCategory)
+  : posts;
 ---
 
-<ul>
+<h1>Blog</h1>
+
+<label for="tagFilter">Filtrer par tag :</label>
+<select id="tagFilter" onchange="filterPosts()">
+  <option value="">-- Tous les tags --</option>
+  {tags.map(tag => (
+    <option value={tag}>{tag}</option>
+  ))}
+</select>
+
+<ul id="postsList">
   {posts.map(post => (
-    <li>
-      <a href={`/blog/${post.slug.split("/").slice(-1)[0]}`}>{convertUpperCaseWithoutDiacritics(post.data.title)}</a>
+    <li class="post-item" data-tags={post.data.tags?.join(' ') || ''}>
+      <a href={`/blog/${post.slug.split("/").slice(-1)[0]}/`}>{post.data.title}</a>
     </li>
   ))}
 </ul>
+
+<ul>
+  {filteredPosts.map(post => (
+    <li>
+      <a href={`/blog/${post.slug.split("/").slice(-1)[0]}/`}>{post.data.title}</a> — <em>{post.data.category}</em>
+    </li>
+  ))}
+</ul>
+
+<h2>Filtrer par catégorie</h2>
+<ul>
+  <li><a href="/blog/">Toutes</a></li>
+  {categories.map(cat => (
+    <li><a href={`/blog?category=${encodeURIComponent(cat)}`}>{cat}</a></li>
+  ))}
+</ul>
+
+<script>
+  function filterPosts() {
+    const select = document.getElementById('tagFilter');
+    const selectedTag = select.value.toLowerCase();
+    const posts = document.querySelectorAll('.post-item');
+    
+    posts.forEach(post => {
+      const tags = post.getAttribute('data-tags').toLowerCase();
+      if (!selectedTag || tags.includes(selectedTag)) {
+        post.style.display = '';
+      } else {
+        post.style.display = 'none';
+      }
+    });
+  }
+</script>
