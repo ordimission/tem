@@ -1,7 +1,7 @@
 import type { MiddlewareHandler } from 'astro';
 
 const BASIC_AUTH_USER = 'gedeon';
-const BASIC_AUTH_PASS = 'Parole777';
+const BASIC_AUTH_PASS = 'spread_word';
 
 function unauthorized() {
   return new Response('Authentification requise', {
