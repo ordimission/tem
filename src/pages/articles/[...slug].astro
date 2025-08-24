@@ -30,8 +30,17 @@ const { Content } = await post.render();
 ---
 
 <Layout title={post.data.title} description={post.data.description}>
+  <h1>{post.data.title}</h1>
+  <em>{post.data.description}</em>
   <article>
-    <h1>{post.data.title}</h1>
+    <table>
+      <tr><th>Sphere</th><th>Lieu</th><th>Date</th></tr>
+      <tr><td>{post.data.category}</td><td>{post.data.tags.join(",")}</td><td>{post.data.pubDate.getFullYear()}</td></tr>
+    </table>
     <Content />
+     <table>
+      <tr><th>Author</th><th>Source</th></tr>
+      <tr><td>{post.data.author}</td><td>{post.data.source}</td></tr>
+    </table>
   </article>
 </Layout>

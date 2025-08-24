@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import Layout from '../../layouts/ArticlesLayout.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('articles');
@@ -15,7 +16,7 @@ export async function getStaticPaths() {
 const { tag } = Astro.params;
 const posts = (await getCollection('articles')).filter(post => post.data.tags.includes (tag));
 ---
-
+<Layout>
 <h1>Articles avec le tag : {tag}</h1>
 
 <ul>
@@ -23,4 +24,4 @@ const posts = (await getCollection('articles')).filter(post => post.data.tags.in
     <li><a href={`/articles/${post.slug.split("/").slice(-1)[0]}/`}>{post.data.title}</a>&nbsp;({post.data.category})</li>
   ))}
 </ul>
-
+</Layout>
