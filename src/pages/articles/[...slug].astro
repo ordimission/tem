@@ -1,11 +1,11 @@
 ---
 import { getCollection } from 'astro:content';
-import Layout from '../../layouts/BlogLayout.astro';
+import Layout from '../../layouts/ArticlesLayout.astro';
 
 
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
+  const posts = await getCollection('articles');
   return posts
     .filter(post => !post.data.draft)
     .map(post => ({
@@ -19,7 +19,7 @@ export async function getStaticPaths() {
 const { slug } = Astro.params;
 
 // Recomposez le slug original si besoin, sinon recherchez directement sur la version nettoyée
-const posts = await getCollection('blog');
+const posts = await getCollection('articles');
 const post = posts.find(p => p.slug.split("/").slice(-1)[0] === slug);
 
 if (!post) {

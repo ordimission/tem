@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('articles');
+const categoryCounts = {};
+
+posts.forEach(post => {
+  categoryCounts[  post.data.category] = (categoryCounts[ post.data.category] || 0) + 1;
+});
+
+const sortedCategories = Object.entries(categoryCounts)
+  .sort(([,a], [,b]) => b - a);
+---
+
+<div class="categories-cloud">
+  {sortedCategories.map(([category, count]) => (
+    <a href={`/categories/${category}/`} class="category-link">
+      #{category} ({count})
+    </a>
+  ))}
+</div>

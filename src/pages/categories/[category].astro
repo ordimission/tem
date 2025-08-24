@@ -3,7 +3,7 @@
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
+  const posts = await getCollection('articles');
   const categories = Array.from(new Set(posts.map(post => post.data.category).filter(Boolean)));
 
   return categories.map(category => ({
@@ -12,13 +12,13 @@ export async function getStaticPaths() {
 }
 
 const { category } = Astro.params;
-const posts = (await getCollection('blog')).filter(post => post.data.category === category);
+const posts = (await getCollection('articles')).filter(post => post.data.category === category);
 ---
 
 <h1>Articles dans la catégorie : {category}</h1>
 
 <ul>
   {posts.map(post => (
-    <li><a href={`/blog/${post.slug.split("/").slice(-1)[0]}/`}>{post.data.title}</a></li>
+    <li><a href={`/articles/${post.slug.split("/").slice(-1)[0]}/`}>{post.data.title}</a></li>
   ))}
 </ul>

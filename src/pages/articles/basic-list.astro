@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-const posts = await getCollection('blog');
+const posts = await getCollection('articles');
 
 function convertUpperCaseWithoutDiacritics(texte: string): string {
   return texte
@@ -15,7 +15,7 @@ function convertUpperCaseWithoutDiacritics(texte: string): string {
 <ul>
   {posts.map(post => (
     <li>
-      <a href={`/blog/${post.slug.split("/").slice(-1)[0]}`}>{convertUpperCaseWithoutDiacritics(post.data.title)}</a>
+      <a href={`/articles/${post.slug.split("/").slice(-1)[0]}`}>{convertUpperCaseWithoutDiacritics(post.data.title)}</a>
     </li>
   ))}
 </ul>

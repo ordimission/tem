@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 
-const posts = await getCollection('blog');
+const posts = await getCollection('articles');
 const tags = Array.from(
   new Set(posts.flatMap(post => post.data.tags ?? []))
 ).sort();
@@ -18,7 +18,16 @@ const filteredPosts = selectedCategory
   : posts;
 ---
 
-<h1>Blog</h1>
+<h1>Articles</h1>
+
+
+<h2>Filtrer par catégorie</h2>
+<ul>
+  <li><a href="/articles/">Toutes</a></li>
+  {categories.map(cat => (
+    <li><a href={`/categories/${encodeURIComponent(cat)}`}>{cat}</a></li>
+  ))}
+</ul>
 
 <label for="tagFilter">Filtrer par tag :</label>
 <select id="tagFilter" onchange="filterPosts()">
@@ -31,26 +40,11 @@ const filteredPosts = selectedCategory
 <ul id="postsList">
   {posts.map(post => (
     <li class="post-item" data-tags={post.data.tags?.join(' ') || ''}>
-      <a href={`/blog/${post.slug.split("/").slice(-1)[0]}/`}>{post.data.title}</a>
+      <a href={`/articles/${post.slug.split("/").slice(-1)[0]}/`}>{post.data.title}</a> — <em>{post.data.category}</em>
     </li>
   ))}
 </ul>
 
-<ul>
-  {filteredPosts.map(post => (
-    <li>
-      <a href={`/blog/${post.slug.split("/").slice(-1)[0]}/`}>{post.data.title}</a> — <em>{post.data.category}</em>
-    </li>
-  ))}
-</ul>
-
-<h2>Filtrer par catégorie</h2>
-<ul>
-  <li><a href="/blog/">Toutes</a></li>
-  {categories.map(cat => (
-    <li><a href={`/blog?category=${encodeURIComponent(cat)}`}>{cat}</a></li>
-  ))}
-</ul>
 
 <script>
   function filterPosts() {

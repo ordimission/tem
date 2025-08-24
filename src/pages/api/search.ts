@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 
 export async function GET() {
-  const posts = await getCollection('blog');
+  const posts = await getCollection('articles');
   const searchData = posts
     .filter(post => !post.data.draft)
     .map(post => ({
@@ -12,7 +12,7 @@ export async function GET() {
       tags: post.data.tags || [],
       category: post.data.category || '',
       content: post.body,
-      url: `/blog/${post.slug.split("/").slice(-1)[0]}/`,
+      url: `/articles/${post.slug.split("/").slice(-1)[0]}/`,
     }));
 
   return new Response(JSON.stringify(searchData), {
