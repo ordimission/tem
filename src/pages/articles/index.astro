@@ -2,63 +2,46 @@
 import { getCollection } from 'astro:content';
 
 const posts = await getCollection('articles');
-const tags = Array.from(
-  new Set(posts.flatMap(post => post.data.tags ?? []))
-).sort();
-const categories = Array.from(
-  new Set(posts.map(post => post.data.category).filter(Boolean))
-).sort();
 
-// Par exemple récupérer la catégorie sélectionnée via un paramètre URL ou manuellement ici
-const selectedCategory = Astro.props?.category || ''; // ou config ici
+const categoryCounts = {};
 
-// Filtrage selon la catégorie sélectionnée (vide = tous)
-const filteredPosts = selectedCategory
-  ? posts.filter(post => post.data.category === selectedCategory)
-  : posts;
+posts.forEach(post => {
+  categoryCounts[  post.data.category] = (categoryCounts[ post.data.category] || 0) + 1;
+});
+
+const sortedCategories = Object.entries(categoryCounts)
+  .sort(([,a], [,b]) => b - a);
+
+const tagCounts = {};
+
+posts.forEach(post => {
+  post.data.tags?.forEach(tag => {
+    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+  });
+});
+
+const sortedTags = Object.entries(tagCounts)
+  .sort(([,a], [,b]) => b - a);
+
 ---
+<h1>Articles&nbsp;({posts.length})</h1>
 
-<h1>Articles</h1>
-
-
-<h2>Filtrer par catégorie</h2>
+<h2>Filtrer par categorie</h2>
 <ul>
-  <li><a href="/articles/">Toutes</a></li>
-  {categories.map(cat => (
-    <li><a href={`/categories/${encodeURIComponent(cat)}`}>{cat}</a></li>
-  ))}
+  {sortedCategories.map(([category, count]) => (
+    <li><a href={`/categories/${category}/`} class="category-link">
+      {category} 
+    </a>&nbsp;({count})
+    </li>
+  ))} 
 </ul>
 
-<label for="tagFilter">Filtrer par tag :</label>
-<select id="tagFilter" onchange="filterPosts()">
-  <option value="">-- Tous les tags --</option>
-  {tags.map(tag => (
-    <option value={tag}>{tag}</option>
-  ))}
-</select>
-
-<ul id="postsList">
-  {posts.map(post => (
-    <li class="post-item" data-tags={post.data.tags?.join(' ') || ''}>
-      <a href={`/articles/${post.slug.split("/").slice(-1)[0]}/`}>{post.data.title}</a> — <em>{post.data.category}</em>
+<h2>Filtrer par tag</h2>
+<ul>
+  {sortedTags.map(([tag, count]) => (
+    <li><a href={`/tags/${tag}/`} class="tag-link">
+      {tag} 
+    </a>&nbsp;({count})
     </li>
   ))}
 </ul>
-
-
-<script>
-  function filterPosts() {
-    const select = document.getElementById('tagFilter');
-    const selectedTag = select.value.toLowerCase();
-    const posts = document.querySelectorAll('.post-item');
-    
-    posts.forEach(post => {
-      const tags = post.getAttribute('data-tags').toLowerCase();
-      if (!selectedTag || tags.includes(selectedTag)) {
-        post.style.display = '';
-      } else {
-        post.style.display = 'none';
-      }
-    });
-  }
-</script>

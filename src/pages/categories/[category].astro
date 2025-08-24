@@ -19,6 +19,6 @@ const posts = (await getCollection('articles')).filter(post => post.data.categor
 
 <ul>
   {posts.map(post => (
-    <li><a href={`/articles/${post.slug.split("/").slice(-1)[0]}/`}>{post.data.title}</a></li>
+    <li><a href={`/articles/${post.slug.split("/").slice(-1)[0]}/`}>{post.data.title}</a>&nbsp;({post.data.tags.join(',')})</li>
   ))}
 </ul>
