@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import Layout from '../../layouts/FiltersLayout.astro';
 
 const posts = await getCollection('articles');
 
@@ -24,6 +25,7 @@ const sortedTags = Object.entries(tagCounts)
   .sort(([,a], [,b]) => b - a);
 
 ---
+<Layout title="Témoignages gédéons">
 <h1>Articles&nbsp;({posts.length})</h1>
 
 <h2>Filtrer par categorie</h2>
@@ -45,3 +47,4 @@ const sortedTags = Object.entries(tagCounts)
     </li>
   ))}
 </ul>
+</Layout>
