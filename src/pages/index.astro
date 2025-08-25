@@ -1,11 +1,65 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/AstroLayout.astro';
+import { getCollection } from "astro:content";
+import Layout from "../layouts/FiltersLayout.astro";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const posts = await getCollection("articles");
+
+const categoryCounts = {};
+
+posts.forEach((post) => {
+  categoryCounts[post.data.category] =
+    (categoryCounts[post.data.category] || 0) + 1;
+});
+
+const sortedCategories = Object.entries(categoryCounts).sort(
+  ([, a], [, b]) => b - a,
+);
+
+const tagCounts = {};
+
+posts.forEach((post) => {
+  post.data.tags?.forEach((tag) => {
+    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+  });
+});
+
+const sortedTags = Object.entries(tagCounts).sort(([, a], [, b]) => b - a);
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Témoignages gédéons">
+  <h1>Témoignages gédéons&nbsp;({posts.length})</h1>
+  <section>
+    <h2>Filtrer par categorie</h2>
+    <ul>
+      {
+        sortedCategories.map(([category, count]) => (
+          <li>
+            <a href={`/categories/${category}/`} class="link">
+              {category}
+            </a>
+            &nbsp;({count})
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+  <section>
+    <h2>Filtrer par tag</h2>
+    <ul>
+      {
+        sortedTags.map(([tag, count]) => (
+          <li>
+            <a href={`/tags/${tag}/`} class="link">
+              {tag}
+            </a>
+            &nbsp;({count})
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+  <a href="/docs/" id="docs" class="box">
+    <h2>Documentation technique sur la technologie Astro de génération d'un site statique</h2>
+    <p>Concernant </p>
+  </a>
 </Layout>
