@@ -28,7 +28,7 @@ const sortedTags = Object.entries(tagCounts).sort(([, a], [, b]) => b - a);
 
 <Layout title="Témoignages gédéons">
   <h1>Témoignages gédéons&nbsp;({posts.length})</h1>
-  <section>
+  <section id="news">
     <h2>Filtrer par categorie</h2>
     <ul>
       {
@@ -43,7 +43,7 @@ const sortedTags = Object.entries(tagCounts).sort(([, a], [, b]) => b - a);
       }
     </ul>
   </section>
-  <section>
+  <section  id="news">
     <h2>Filtrer par tag</h2>
     <ul>
       {
@@ -58,8 +58,10 @@ const sortedTags = Object.entries(tagCounts).sort(([, a], [, b]) => b - a);
       }
     </ul>
   </section>
-  <a href="/docs/" id="docs" class="box">
-    <h2>Documentation technique sur la technologie Astro de génération d'un site statique</h2>
-    <p>Concernant </p>
-  </a>
+  <section>
+  <a href="/docs/" id="news" class="box">
+    <h2>Documentation technique</h2>
+     </a>
+    <p>A propos de la technologie Astro de génération d'un site statique à partir de documents <a href="https://www.markdownlang.com/fr/">Markdown</a> </p>
+  </section>
 </Layout>
