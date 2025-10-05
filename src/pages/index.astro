@@ -24,6 +24,19 @@ posts.forEach((post) => {
 });
 
 const sortedTags = Object.entries(tagCounts).sort(([, a], [, b]) => b - a);
+
+const areas = ["ASIE",
+"FRANCOPHONIE",
+"EUROPE",
+"EUROPE COMMUNISTE",
+"INTERNATIONAL",
+"MOYEN-ORIENT",
+"AFRIQUE",
+"AMERIQUE DU NORD",
+"AMERIQUE DU SUD",
+"AMERIQUE LATINE",
+"ASIE CENTRALE",
+"OCEANIE"];
 ---
 
 <Layout title="Témoignages gédéons">
@@ -43,11 +56,30 @@ const sortedTags = Object.entries(tagCounts).sort(([, a], [, b]) => b - a);
       }
     </ul>
   </section>
-  <section  id="news">
-    <h2>Filtrer par tag</h2>
+  <section  id="areas">
+    <h2>Filtrer par tag (région)</h2>
     <ul>
       {
-        sortedTags.map(([tag, count]) => (
+        sortedTags
+        .filter(([tag]) => areas.includes(tag))
+        .map(([tag, count]) => (
+          <li>
+            <a href={`/tags/${tag}/`} class="link">
+              {tag}
+            </a>
+            &nbsp;({count})
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+    <section  id="countries">
+    <h2>Filtrer par tag (pays)</h2>
+    <ul>
+      {
+        sortedTags
+         .filter(([tag]) => !areas.includes(tag))
+         .map(([tag, count]) => (
           <li>
             <a href={`/tags/${tag}/`} class="link">
               {tag}

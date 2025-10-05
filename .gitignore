@@ -25,3 +25,5 @@ pnpm-debug.log*
 
 .htpasswd
 .htaccess
+
+src/content/articles/*
